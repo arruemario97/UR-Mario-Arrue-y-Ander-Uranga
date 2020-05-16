@@ -1,0 +1,56 @@
+def Ejercicio_1():
+  step_count_d6d41fb4_98d4_41d9_950e_e24684762304 = 0
+  thread Step_Counter_Thread_129154c3_b9b4_4b41_8c24_510c95503fa6():
+    while (True):
+      step_count_d6d41fb4_98d4_41d9_950e_e24684762304 = step_count_d6d41fb4_98d4_41d9_950e_e24684762304 + 1
+      sync()
+    end
+  end
+  run Step_Counter_Thread_129154c3_b9b4_4b41_8c24_510c95503fa6()
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(0)
+  set_safety_mode_transition_hardness(1)
+  set_gravity([0.0, 0.0, 9.82])
+  set_tcp(p[0.0,0.0,0.15,0.0,0.0,1.5707963267948966])
+  set_payload(1.5)
+  $ 1 "Robot Program"
+  $ 2 "Script: Ejercicio_1.script"
+  # Info usuario
+  popup("Iniciando programa pick&place",title="Titulo",warning=False,blocking=True)
+  textmsg("Iniciando programa")
+  
+  # Preparar instalacion
+  set_gravity([0,0,9.8])
+  set_tcp(p[0,0,0.150,0,0,1.57])
+  set_payload_mass(1.5)
+  
+  # Movimiento inicial
+  safe_pose = [0,-0.78,-1.57,-2.35,1.57,0]
+  movej(safe_pose,1.5,1)
+  
+  # Movimientos
+  pose_1 = p[0.500,0,0.250,0,3.1416,0]
+  pose_2 = p[0.500,0,0,0,3.1416,0]
+  pose_3 = p[0.500,0.250,0.250,0,3.1416,0]
+  pose_4 = p[0.500,0.250,0,0,3.1416,0]
+  
+  movej(pose_1,1.5,1) #primera posicion
+  movel(pose_2,1.5,1) #baja 250
+  sleep(1)
+  movej(pose_1,1.5,1) #sube primera posicion
+  movej(pose_3,1.5,1) #ir segunda posicion
+  movej(pose_4,1.5,1) #baja 250
+  sleep(1)
+  movej(pose_3,1.5,1) #sube segunda posicion
+  movej(safe_pose,1.5,1) # volver posicion de seguridad
+end

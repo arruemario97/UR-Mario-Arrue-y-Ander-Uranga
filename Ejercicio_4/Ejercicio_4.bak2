@@ -1,0 +1,83 @@
+# Preparar instalacion2
+        set_gravity([0,0,9.8])
+        set_payload_mass(3)
+  
+       # Configuración herramientas
+        t_desbarb=p[-0.25, -0.15, 1.05,0,0,0] # herramienta desbarbado
+        t_pulido=p[-0.25, -0.15, 1,0,0,0] # herramienta pulido
+  
+        # Variables
+        varx = 0
+        vary = 0
+        n_filas = 2.0
+        n_columnas = 2.0
+        d_filas = 0.02
+        d_columnas = 0.02
+  
+        #rutina de desbarbado
+        def desbarbado(varx, vary, n_filas, n_columnas, d_filas, d_columnas):
+         i=1
+         j=1
+         set_tcp(t_desbarb)
+         set_digital_out(0,True)
+         while i <= n_columnas:
+          while  j <= n_filas:
+           pose_pre = p[-0.25+varx, -0.15+vary, 1.05,0,0,0]
+           pose_desb = p[-0.25+varx, -0.15+vary, 1.0,0,0,0]
+           movej(pose_pre,1.5,1) #acercamiento
+           movel(pose_desb,1.5,1) #punto desbarbado
+           sleep(2.5)
+           movej(pose_pre,1.5,1) #salida
+           textmsg("Desbarbado en fila "+to_str(j)+" columna "+to_str(i)+" finalizado")
+           varx=varx+d_filas
+           j=j+1
+          end
+         varx=0
+         j=1
+         vary=vary+d_columnas
+         i=i+1
+        end
+        set_digital_out(0,False)
+        end
+  
+      #rutina de pulido
+        def pulido(varx, vary, n_filas, n_columnas, d_filas, d_columnas):
+        i=1
+        j=1
+         set_tcp(t_pulido)
+         set_digital_out(1,True)
+         while i <= n_columnas:
+          while  j <= n_filas:
+           pose_pre = p[-0.25+varx, -0.15+vary, 1.05,0,0,0]
+           pose_desb = p[-0.25+varx, -0.15+vary, 1.0,0,0,0]
+           movej(pose_pre,1.5,1) #acercamiento
+           movel(pose_desb,1.5,1) #punto desbarbado
+           sleep(1)
+           movej(pose_pre,1.5,1) #salida
+           textmsg("Pulido en fila "+to_str(j)+" columna "+to_str(i)+" finalizado")
+           varx=varx+d_filas
+           j=j+1
+          end
+         varx=0
+         j=1
+         vary=vary+d_columnas
+         i=i+1
+        end
+        set_digital_out(0,False)
+        end
+  
+        #Programa
+        set_tcp(t_desbarb)
+        popup("Iniciando programa desbarbado/pulido rejillas",title="Info",warning=False,blocking=True)
+        textmsg("Iniciando programa")
+        safe_pose = [0,-0.39,-1.96,0.78,1.57,0]
+        movej(safe_pose,1.5,1)
+        while get_digital_in(0) != 1:
+        sleep(0.1)
+        end
+        desbarbado (varx, vary, n_filas, n_columnas, d_filas, d_columnas)
+        movej(safe_pose,1.5,1)
+        pulido (varx, vary, n_filas, n_columnas, d_filas, d_columnas)
+        movej(safe_pose,1.5,1)
+        textmsg("Programa finalizado")
+        popup("Programa desbarbado/pulido rejillas finalizado",title="Info",warning=False,blocking=True)
