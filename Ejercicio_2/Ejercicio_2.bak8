@@ -1,0 +1,49 @@
+# Preparar instalacion
+set_gravity([0,0,9.8])
+set_tcp(p[0,0.025,0.175,0,0,1.57])
+set_payload_mass(2)
+
+#mensajes de inicio
+popup("Iniciando programa desbarbado rejillas",title="Titulo",warning=False,blocking=True)
+textmsg("Iniciando programa")
+
+# Variables
+varx = 0
+vary = 0
+n_filas = 2.0
+n_columnas = 2.0
+d_filas = 0.2
+d_columnas = 0.2
+
+#puntos
+pose_pre = p[0.5+varx,-0.150+vary,0.05,0,3.1416,0]
+pose_desb = p[0.5+varx,-0.150+vary,0,0,3.1416,0]
+  
+# Movimiento inicial
+safe_pose = [0,-0.78,-1.57,-2.35,1.57,0]
+movej(safe_pose,1.5,1)
+
+#Programa
+set_digital_out(0,True)
+
+i=0
+j=0
+while i < n_columnas:
+ while  j < n_filas:
+  pose_pre = p[0.5+varx,-0.150+vary,0.05,0,3.1416,0]
+  pose_desb = p[0.5+varx,-0.150+vary,0,0,3.1416,0]
+  movej(pose_pre,1.5,1) #acercamiento
+  movel(pose_desb,1.5,1) #punto desbarbado
+  sleep(2.5)
+  movej(pose_pre,1.5,1) #salida
+  varx=varx+d_filas
+  i=i+1
+  end
+ varx=0
+ i=0
+ vary=vary+d_columnas
+ j=j+1
+end
+
+set_digital_out(0,False)
+movej(safe_pose,1.5,1)

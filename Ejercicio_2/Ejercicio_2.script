@@ -1,0 +1,46 @@
+
+  # Preparar instalacion
+  set_gravity([0,0,9.8])
+  set_tcp(p[0,0.025,0.175,0,0,1.57])
+  set_payload_mass(2)
+  
+  # Variables
+  varx = 0
+  vary = 0
+  n_filas = 2.0
+  n_columnas = 2.0
+  d_filas = 0.02
+  d_columnas = 0.02
+  i=1
+  j=1
+  
+  #rutina de desbarbado
+  def desbarbado(varx, vary, n_filas, n_columnas, d_filas, d_columnas):
+   set_digital_out(0,True)
+   while i <= n_columnas:
+    while  j <= n_filas:
+     pose_pre = p[0.5+varx,-0.150+vary,0.05,0,3.1416,0]
+     pose_desb = p[0.5+varx,-0.150+vary,0,0,3.1416,0]
+     movej(pose_pre,1.5,1) #acercamiento
+     movel(pose_desb,1.5,1) #punto desbarbado
+     sleep(2.5)
+     movej(pose_pre,1.5,1) #salida
+     varx=varx+d_filas
+	 textmsg("Desbarbado en fila "+to_str(j)+" columna "+to_str(i)+" finalizado")
+     j=j+1
+    end
+   varx=0
+   j=1
+   vary=vary+d_columnas
+   i=i+1
+  end
+  set_digital_out(0,False)
+  end
+  
+  #Programa
+  popup("Iniciando programa desbarbado rejillas",title="Titulo",warning=False,blocking=True)
+  textmsg("Iniciando programa")
+  safe_pose = [0,-0.78,-1.57,-2.35,1.57,0]
+  movej(safe_pose,1.5,1)
+  desbarbado (varx, vary, n_filas, n_columnas, d_filas, d_columnas)
+  movej(safe_pose,1.5,1)
